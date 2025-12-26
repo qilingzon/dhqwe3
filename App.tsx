@@ -3337,8 +3337,8 @@ function App() {
       {/* 底部备案信息 */}
       <footer className="w-full py-3 px-4 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 flex justify-center">
         <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
-          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">ICP备案号: 浙ICP备2024088237号</a>
-          <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">公安备案号: 浙公网安备 33010802013590号</a>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">桂ICP备2025078799号</a>
+          <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">如有需要>ra>
           <a href="mailto:qiling@aniv.cn" className="hover:text-blue-500 transition-colors">联系我们: qiling@aniv.cn</a>
         </div>
       </footer>
@@ -3347,4 +3347,5 @@ function App() {
 }
 
 export default App;
+
 
