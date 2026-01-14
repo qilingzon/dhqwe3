@@ -52,8 +52,8 @@ export default defineConfig(({ mode }) => {
         },
         // 减小 chunk 大小限制
         chunkSizeWarningLimit: 500,
-        // 兼容更多浏览器（包括百度浏览器等国产浏览器）
-        target: ['es2015', 'chrome64', 'edge79', 'firefox67', 'safari12'],
+        // 启用 Tree Shaking
+        target: 'esnext',
       },
       optimizeDeps: {
         include: ['react', 'react-dom', 'lucide-react'],
