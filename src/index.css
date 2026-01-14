@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* Tailwind CSS v4 兼容写法 */
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
 @import "./hover-card.css";
 
 /* 强制设置浅色模式为默认 */
