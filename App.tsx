@@ -3341,6 +3341,9 @@ function App() {
             <img src="/beian.png" alt="备案" className="w-3 h-3 mr-1" />
             桂ICP备2025078799号-1
           </a>
+          <a href="https://beian.mps.gov.cn/#/query/webSearch?code=45092402000176" target="_blank" rel="noreferrer" className="hover:text-blue-500 transition-colors">
+            桂公网安备45092402000176号
+          </a>
           <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">如有需要</a>
           <a href="mailto:qiling@aniv.cn" className="hover:text-blue-500 transition-colors">联系我们: qiling@aniv.cn</a>
         </div>
