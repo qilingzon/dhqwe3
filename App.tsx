@@ -3338,7 +3338,7 @@ function App() {
       <footer className="w-full py-3 px-4 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 flex justify-center">
         <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
           <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors">
-            <img src="/beian.png" alt="备案" className="w-3 h-3 mr-1" />
+            <img src="/icpbeian.png" alt="ICP备案" className="w-3 h-3 mr-1" />
             桂ICP备2025078799号-1
           </a>
           <a href="https://beian.mps.gov.cn/#/query/webSearch?code=45092402000176" target="_blank" rel="noreferrer" className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors">
