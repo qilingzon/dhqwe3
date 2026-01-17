@@ -3341,7 +3341,8 @@ function App() {
             <img src="/beian.png" alt="备案" className="w-3 h-3 mr-1" />
             桂ICP备2025078799号-1
           </a>
-          <a href="https://beian.mps.gov.cn/#/query/webSearch?code=45092402000176" target="_blank" rel="noreferrer" className="hover:text-blue-500 transition-colors">
+          <a href="https://beian.mps.gov.cn/#/query/webSearch?code=45092402000176" target="_blank" rel="noreferrer" className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors">
+            <img src="/beian.png" alt="公安备案" className="w-3 h-3 mr-1" />
             桂公网安备45092402000176号
           </a>
           <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">如有需要</a>
