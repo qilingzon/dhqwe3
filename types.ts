@@ -77,9 +77,17 @@ export interface PasswordExpiryConfig {
   unit: PasswordExpiryUnit; // 单位
 }
 
+// 维护模式配置
+export interface MaintenanceConfig {
+  enabled: boolean; // 是否启用维护模式
+  message?: string; // 维护提示信息
+  estimatedTime?: string; // 预计恢复时间
+}
+
 // 网站配置
 export interface WebsiteConfig {
   passwordExpiry: PasswordExpiryConfig;
+  maintenance?: MaintenanceConfig; // 维护模式配置
 }
 
 // 搜索模式类型

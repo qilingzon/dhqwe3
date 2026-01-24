@@ -42,6 +42,22 @@
     <title>蜗牛个人导航</title>
   <link rel="stylesheet" href="/src/index.css">
   <script>
+    // 检查维护模式
+    (function() {
+      fetch('/api/storage?getConfig=maintenance')
+        .then(response => response.json())
+        .then(config => {
+          if (config.enabled === true) {
+            // 将配置保存到 sessionStorage 供维护页面使用
+            sessionStorage.setItem('maintenanceConfig', JSON.stringify(config));
+            window.location.href = '/maintenance.html';
+          }
+        })
+        .catch(error => {
+          console.log('维护模式检查失败，继续正常加载');
+        });
+    })();
+
     // 确保页面加载时使用正确的主题
     (function() {
       const theme = localStorage.getItem('cloudnav_theme_preference');

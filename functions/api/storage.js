@@ -56,7 +56,7 @@ export async function onRequest(context) {
       }
       
       // Get Config
-      if (['ai', 'website', 'search', 'mastodon', 'weather'].includes(getConfig)) {
+      if (['ai', 'website', 'search', 'mastodon', 'weather', 'maintenance'].includes(getConfig)) {
         const unifiedConfigStr = await CLOUDNAV_KV.get('config');
         const config = unifiedConfigStr ? JSON.parse(unifiedConfigStr) : {};
 
@@ -66,6 +66,7 @@ export async function onRequest(context) {
         else if (getConfig === 'search') response = config.search || {};
         else if (getConfig === 'mastodon') response = config.mastodon || {};
         else if (getConfig === 'weather') response = config.weather || {};
+        else if (getConfig === 'maintenance') response = config.maintenance || { enabled: false, message: '我们正在进行系统升级和维护', estimatedTime: '稍后' };
 
         return new Response(JSON.stringify(response), {
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -202,8 +203,8 @@ export async function onRequest(context) {
         });
       }
   
-      // Save Config (Search, AI, Website, Mastodon, Weather)
-      if (['search', 'ai', 'website', 'mastodon', 'weather'].includes(body.saveConfig)) {
+      // Save Config (Search, AI, Website, Mastodon, Weather, Maintenance)
+      if (['search', 'ai', 'website', 'mastodon', 'weather', 'maintenance'].includes(body.saveConfig)) {
         let unifiedConfig = {};
         const existingConfig = await CLOUDNAV_KV.get('config');
         if (existingConfig) unifiedConfig = JSON.parse(existingConfig);

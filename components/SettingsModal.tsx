@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Save, Bot, Key, Globe, Sparkles, PauseCircle, Wrench, Box, Copy, Check, Settings, Clock, Lock, LayoutGrid, MessageCircle, Cloud, BookOpen, Upload, CloudCog, LogOut, Download } from 'lucide-react';
-import { AIConfig, LinkItem, PasswordExpiryConfig, MastodonConfig, WeatherConfig } from '../types';
+import { X, Save, Bot, Key, Globe, Sparkles, PauseCircle, Wrench, Box, Copy, Check, Settings, Clock, Lock, LayoutGrid, MessageCircle, Cloud, BookOpen, Upload, CloudCog, LogOut, Download, AlertTriangle } from 'lucide-react';
+import { AIConfig, LinkItem, PasswordExpiryConfig, MastodonConfig, WeatherConfig, MaintenanceConfig } from '../types';
 import { generateLinkDescription } from '../services/geminiService';
 import { toast } from './Toast';
 
@@ -20,12 +20,14 @@ interface SettingsModalProps {
   onMastodonConfigChange: (config: Partial<MastodonConfig>) => void;
   weatherConfig: WeatherConfig;
   onWeatherConfigChange: (config: Partial<WeatherConfig>) => void;
+  maintenanceConfig: MaintenanceConfig;
+  onMaintenanceConfigChange: (config: Partial<MaintenanceConfig>) => void;
   onImportClick: () => void;
   onBackupClick: () => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
-    isOpen, onClose, config, onSave, links, onUpdateLinks, passwordExpiryConfig, onSavePasswordExpiry, authToken, showPinnedWebsites, onShowPinnedWebsitesChange, mastodonConfig, onMastodonConfigChange, weatherConfig, onWeatherConfigChange, onImportClick, onBackupClick
+    isOpen, onClose, config, onSave, links, onUpdateLinks, passwordExpiryConfig, onSavePasswordExpiry, authToken, showPinnedWebsites, onShowPinnedWebsitesChange, mastodonConfig, onMastodonConfigChange, weatherConfig, onWeatherConfigChange, maintenanceConfig, onMaintenanceConfigChange, onImportClick, onBackupClick
 }) => {
   console.log('SettingsModal rendering. isOpen:', isOpen, 'authToken:', authToken, 'config:', config);
   const [activeTab, setActiveTab] = useState<'tools' | 'website'>('website');
@@ -38,6 +40,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     `@${mastodonConfig.username}@${mastodonConfig.instance}` : ''
   );
   const [localWeatherConfig, setLocalWeatherConfig] = useState<WeatherConfig>(weatherConfig || { enabled: false });
+  const [localMaintenanceConfig, setLocalMaintenanceConfig] = useState<MaintenanceConfig>(maintenanceConfig || { enabled: false, message: '我们正在进行系统升级和维护', estimatedTime: '稍后' });
 
   // Bulk Generation State
   const [isProcessing, setIsProcessing] = useState(false);
@@ -77,6 +80,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         );
       }
       if (weatherConfig) setLocalWeatherConfig(weatherConfig);
+      if (maintenanceConfig) setLocalMaintenanceConfig(maintenanceConfig);
       
       setIsProcessing(false);
       setProgress({ current: 0, total: 0 });
@@ -103,6 +107,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     setLocalWeatherConfig(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleMaintenanceConfigChange = (key: keyof MaintenanceConfig, value: boolean | string) => {
+    setLocalMaintenanceConfig(prev => ({ ...prev, [key]: value }));
+  };
+
   const handleSave = () => {
     // 将默认视图模式包含在 AI 配置中一起保存
     const configWithViewMode = {
@@ -113,6 +121,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     onSavePasswordExpiry(localPasswordExpiryConfig);
     onMastodonConfigChange(localMastodonConfig);
     onWeatherConfigChange(localWeatherConfig);
+    onMaintenanceConfigChange(localMaintenanceConfig);
     onClose();
   };
 
@@ -1083,6 +1092,79 @@ document.addEventListener('DOMContentLoaded', async () => {
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-slate-200 dark:border-slate-700">
+                        <h4 className="font-bold dark:text-white mb-3 text-sm flex items-center gap-2">
+                            <AlertTriangle size={16} /> 维护模式设置
+                        </h4>
+                        <p className="text-xs text-slate-500 mb-4">
+                            开启维护模式后，所有访客将看到维护页面，无法访问网站内容。管理员可以随时关闭维护模式恢复正常访问。
+                        </p>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={localMaintenanceConfig?.enabled}
+                                        onChange={(e) => handleMaintenanceConfigChange('enabled', e.target.checked)}
+                                        className="w-4 h-4 text-orange-600 bg-slate-100 border-slate-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+                                    />
+                                    <span className="text-sm font-medium dark:text-slate-300">启用维护模式</span>
+                                </label>
+                                <p className="text-xs text-slate-500 mt-1 ml-7">
+                                    开启后，访客将看到维护页面
+                                </p>
+                            </div>
+
+                            {localMaintenanceConfig?.enabled && (
+                                <>
+                                    <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                        <div className="flex items-start gap-3">
+                                            <AlertTriangle className="w-5 h-5 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
+                                            <div>
+                                                <h5 className="text-sm font-medium text-orange-900 dark:text-orange-100 mb-1">维护模式已启用</h5>
+                                                <p className="text-xs text-orange-700 dark:text-orange-300">
+                                                    当前网站处于维护模式，所有访客将看到维护页面。保存设置后立即生效。
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-medium text-slate-500 mb-1">
+                                            维护提示信息
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={localMaintenanceConfig?.message || ''}
+                                            onChange={(e) => handleMaintenanceConfigChange('message', e.target.value)}
+                                            placeholder="我们正在进行系统升级和维护"
+                                            className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                                        />
+                                        <p className="text-[10px] text-slate-400 mt-1">
+                                            显示在维护页面上的提示信息
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-medium text-slate-500 mb-1">
+                                            预计恢复时间
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={localMaintenanceConfig?.estimatedTime || ''}
+                                            onChange={(e) => handleMaintenanceConfigChange('estimatedTime', e.target.value)}
+                                            placeholder="稍后"
+                                            className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                                        />
+                                        <p className="text-[10px] text-slate-400 mt-1">
+                                            例如：2小时后、明天上午10点、稍后等
+                                        </p>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 

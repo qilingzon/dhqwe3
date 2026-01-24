@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站维护中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .time {
+            font-size: 16px;
+            color: #999;
+            margin-top: 30px;
+        }
+
+        .contact {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .contact p {
+            font-size: 14px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .icon {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="#667eea" stroke-width="2"/>
+                <path d="M12 6V12L16 14" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <h1>🔧 网站维护中</h1>
+        
+        <p id="maintenanceMessage">我们正在进行系统升级和维护</p>
+        <p>为了给您提供更好的服务体验</p>
+        <p>网站暂时无法访问</p>
+        
+        <div class="time">
+            <p>预计恢复时间：<span id="estimatedTime">稍后</span></p>
+        </div>
+        
+        <div class="contact">
+            <p>给您带来不便，敬请谅解</p>
+            <p>感谢您的耐心等待 ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        // 从 sessionStorage 加载维护信息
+        try {
+            const configStr = sessionStorage.getItem('maintenanceConfig');
+            if (configStr) {
+                const config = JSON.parse(configStr);
+                if (config.message) {
+                    document.getElementById('maintenanceMessage').textContent = config.message;
+                }
+                if (config.estimatedTime) {
+                    document.getElementById('estimatedTime').textContent = config.estimatedTime;
+                }
+            }
+        } catch (error) {
+            console.log('使用默认维护信息');
+        }
+    </script>
+</body>
+</html>

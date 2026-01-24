@@ -27,7 +27,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { LinkItem, Category, DEFAULT_CATEGORIES, INITIAL_LINKS, WebDavConfig, AIConfig, SearchMode, ExternalSearchSource, SearchConfig, PasswordExpiryConfig, IconConfig, AppConfig, WeatherConfig, MastodonConfig } from './types';
+import { LinkItem, Category, DEFAULT_CATEGORIES, INITIAL_LINKS, WebDavConfig, AIConfig, SearchMode, ExternalSearchSource, SearchConfig, PasswordExpiryConfig, IconConfig, AppConfig, WeatherConfig, MastodonConfig, MaintenanceConfig } from './types';
 import { parseBookmarks } from './services/bookmarkParser';
 import { DEFAULT_ICON_CONFIG } from './src/constants';
 import { configManager, loadAppConfig, saveAppConfig, getAppConfig, getWebDavConfig, getSearchConfig, getIconConfig, getViewMode, getUIConfig, getAIConfig, getWebsiteConfig, getMastodonConfig, getWeatherConfig, updateWebDavConfig, updateSearchConfig, updateIconConfig, updateMastodonConfig, updateWeatherConfig, updateViewMode, updateUIConfig, updateAIConfig, updateWebsiteConfig, syncConfigToKV, syncConfigFromKV } from './src/utils/configManager';
@@ -178,6 +178,13 @@ function App() {
     apiKey: '',
     location: '101010100',
     unit: 'celsius'
+  });
+
+  // Maintenance Config State - 从服务器配置加载
+  const [maintenanceConfig, setMaintenanceConfig] = useState<MaintenanceConfig>({
+    enabled: false,
+    message: '我们正在进行系统升级和维护',
+    estimatedTime: '稍后'
   });
 
   // Modals
@@ -903,6 +910,21 @@ function App() {
             }
         } catch (e) {
             console.warn("Failed to fetch weather config from KV.", e);
+        }
+
+        // 获取维护模式配置 - 这是公开访问的
+        try {
+            const maintenanceConfigRes = await fetch('/api/storage?getConfig=maintenance');
+            if (maintenanceConfigRes.ok) {
+                const maintenanceConfigData = await maintenanceConfigRes.json();
+                setMaintenanceConfig(maintenanceConfigData || {
+                    enabled: false,
+                    message: '我们正在进行系统升级和维护',
+                    estimatedTime: '稍后'
+                });
+            }
+        } catch (e) {
+            console.warn("Failed to fetch maintenance config from KV.", e);
         }
 
         // 如果有云端数据，则不需要加载本地数据
@@ -1914,6 +1936,38 @@ function App() {
     }
   };
 
+  // --- Maintenance Config ---
+  const handleMaintenanceConfigChange = async (config: Partial<MaintenanceConfig>) => {
+    const updatedConfig = { ...maintenanceConfig, ...config };
+    setMaintenanceConfig(updatedConfig);
+
+    // 保存维护模式配置到 KV
+    if (authToken) {
+      try {
+        const response = await fetch('/api/storage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-password': authToken
+          },
+          body: JSON.stringify({
+            saveConfig: 'maintenance',
+            config: updatedConfig
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save maintenance config');
+        }
+
+        success('维护模式配置已保存');
+      } catch (error) {
+        console.error('Failed to save maintenance config:', error);
+        error('保存维护模式配置失败');
+      }
+    }
+  };
+
   // --- Search Config ---
   const handleSaveSearchConfig = async (sources: ExternalSearchSource[], mode: SearchMode, selectedSource?: ExternalSearchSource | null) => {
       const searchConfig: SearchConfig = {
@@ -2658,6 +2712,8 @@ function App() {
         onMastodonConfigChange={handleMastodonConfigChange}
         weatherConfig={weatherConfig}
         onWeatherConfigChange={handleWeatherConfigChange}
+        maintenanceConfig={maintenanceConfig}
+        onMaintenanceConfigChange={handleMaintenanceConfigChange}
         onImportClick={() => { setIsImportModalOpen(true); setIsSettingsModalOpen(false); }}
         onBackupClick={() => { setIsBackupModalOpen(true); setIsSettingsModalOpen(false); }}
       />
@@ -3299,6 +3355,8 @@ function App() {
               onMastodonConfigChange={handleMastodonConfigChange}
               weatherConfig={weatherConfig}
               onWeatherConfigChange={handleWeatherConfigChange}
+              maintenanceConfig={maintenanceConfig}
+              onMaintenanceConfigChange={handleMaintenanceConfigChange}
               onImportClick={() => { setIsSettingsModalOpen(false); setIsImportModalOpen(true); }}
               onBackupClick={() => { setIsSettingsModalOpen(false); setIsBackupModalOpen(true); }}
             />
