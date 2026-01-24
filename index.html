@@ -41,9 +41,33 @@
 
     <title>蜗牛个人导航</title>
   <link rel="stylesheet" href="/src/index.css">
+  <style>
+    /* 维护模式检查时隐藏页面内容，避免闪现 */
+    #root {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #root.loaded {
+      opacity: 1;
+    }
+  </style>
   <script>
     // 检查维护模式
     (function() {
+      // 检查是否有管理员绕过参数
+      const urlParams = new URLSearchParams(window.location.search);
+      const adminBypass = urlParams.get('admin');
+      
+      // 如果有管理员令牌或已登录，允许访问
+      const authToken = localStorage.getItem('cloudnav_auth_token');
+      
+      if (adminBypass === 'true' || authToken) {
+        // 管理员绕过维护模式
+        document.getElementById('root').classList.add('loaded');
+        return;
+      }
+      
+      // 普通访客检查维护模式
       fetch('/api/storage?getConfig=maintenance')
         .then(response => response.json())
         .then(config => {
@@ -51,10 +75,14 @@
             // 将配置保存到 sessionStorage 供维护页面使用
             sessionStorage.setItem('maintenanceConfig', JSON.stringify(config));
             window.location.href = '/maintenance.html';
+          } else {
+            // 维护模式未开启，显示页面
+            document.getElementById('root').classList.add('loaded');
           }
         })
         .catch(error => {
           console.log('维护模式检查失败，继续正常加载');
+          document.getElementById('root').classList.add('loaded');
         });
     })();
 
